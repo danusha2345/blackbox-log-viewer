@@ -84,7 +84,7 @@ export function GraphConfig(graphConfig) {
             { ...field, curve: { ...field.curve },
               friendlyName: FlightLogFieldPresenter.fieldNameToFriendly(
                 field.name,
-                flightLog.getSysConfig().debug_mode,
+                FlightLogFieldPresenter.debugModeName(flightLog.getSysConfig()),
               ),
             },
           ),
