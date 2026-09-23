@@ -2411,25 +2411,22 @@ FlightLogFieldPresenter.decodeDebugFieldToFriendly = function (
 };
 
 // debugMode: the mode name (string) or, for callers that only have the header ordinal, the number.
+function debugFieldToFriendly(fieldName, debugMode) {
+  const debugModeName = typeof debugMode === "string" ? debugMode : DEBUG_MODE[debugMode];
+  const debugFields = debugModeName ? DEBUG_FRIENDLY_FIELD_NAMES[debugModeName] : undefined;
+
+  if (debugFields) {
+    return debugFields[fieldName] ?? fieldName;
+  }
+  if (fieldName === "debug[all]") {
+    return `Debug (${debugModeName || debugMode})`;
+  }
+  return DEBUG_FRIENDLY_FIELD_NAMES[DEBUG_MODE[0]][fieldName] ?? fieldName;
+}
+
 FlightLogFieldPresenter.fieldNameToFriendly = function (fieldName, debugMode) {
-  if (debugMode) {
-    if (fieldName.includes("debug")) {
-      const debugModeName = typeof debugMode === "string" ? debugMode : DEBUG_MODE[debugMode];
-      let debugFields;
-
-      if (debugModeName) {
-        debugFields = DEBUG_FRIENDLY_FIELD_NAMES[debugModeName];
-      }
-
-      if (!debugFields) {
-        if (fieldName === "debug[all]") {
-          return `Debug (${debugModeName || debugMode})`;
-        }
-        debugFields = DEBUG_FRIENDLY_FIELD_NAMES[DEBUG_MODE[0]];
-      }
-
-      return debugFields[fieldName] ?? fieldName;
-    }
+  if (debugMode != null && fieldName.includes("debug")) {
+    return debugFieldToFriendly(fieldName, debugMode);
   }
   if (FRIENDLY_FIELD_NAMES[fieldName]) {
     return FRIENDLY_FIELD_NAMES[fieldName];
